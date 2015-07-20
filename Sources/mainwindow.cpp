@@ -12,10 +12,11 @@ class CloneAction : public QAction {
     Q_OBJECT
   public:
     CloneAction(QAction *original, QObject *parent = 0) : QAction(parent), m_orig(original) {
-      connect(this, SIGNAL(changed()), original, SLOT(__update()));       // update on change
-      connect(this, SIGNAL(destroyed()), original, SLOT(deleteLater()));  // delete on destroyed
       connect(this, SIGNAL(triggered()), original, SLOT(trigger()));      // trigger on triggered
-      // repeat with toggled, etc.
+      connect(this, SIGNAL(toggle(bool)), original, SLOT(toggle(bool)));  // trigger on toggled
+
+      connect(original, SIGNAL(changed()), this, SLOT(__update()));       // update on change
+      connect(original, SIGNAL(destroyed()), this, SLOT(deleteLater()));  // delete on destroyed
       __update();
     }
   private slots:
@@ -288,15 +289,20 @@ MainWindow::MainWindow(QWidget *parent) :
       bs->setDefaultAction(clone);
       bs->setStyleSheet(
         "QToolButton {"
-        "  border: 0px;"
-        "  padding-left: 2px;"
+        "  border: 1px solid transparent;"
         "}"
         "QToolButton:pressed {"
         "  background-color: qlineargradient("
         "    x1: 0, y1: 0, x2: 0, y2: 1,"
         "    stop: 0 #dadbde, stop: 1 #f6f7fa"
+        "  border: 1px dotted grey;"
         ")}"
-        "QToolButton:hover {"
+        "QToolButton:checked {"
+        "  background-color: qlineargradient("
+        "    x1: 0, y1: 0, x2: 0, y2: 1,"
+        "    stop: 0 #dadbde, stop: 1 #f6f7fa"
+        ")}"
+         "QToolButton:hover {"
         "  border: 1px dotted grey;"
         "}"
       );

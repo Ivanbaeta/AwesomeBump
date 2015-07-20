@@ -1018,7 +1018,6 @@ void GLImage::resizeGL(int width, int height)
       orthographicProjHeight = (1+zoom)/windowRatio;
       orthographicProjWidth = (1+zoom)/fboRatio;
     } else {
-      qWarning() << Q_FUNC_INFO;
       if (!activeImage) qWarning() << "  activeImage is null";
       else
 	if (!activeImage->fbo) qWarning() << "  activeImage->fbo is null";

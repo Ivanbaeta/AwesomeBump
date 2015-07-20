@@ -42,6 +42,10 @@
 #include <QtOpenGL>
 #include <math.h>
 #include "glwidget.h"
+
+extern QString _find_data_dir(const QString& path);
+
+
 QDir* GLWidget::recentMeshDir = NULL;
 
 GLWidget::GLWidget(QWidget *parent, QGLWidget * shareWidget)
@@ -508,10 +512,10 @@ void GLWidget::initializeGL()
     lightDirection.toggleFreeCamera(false);
     lightDirection.radius = 1;
 
-    mesh        = new Mesh("Core/3D/","Cube.obj");
-    skybox_mesh = new Mesh("Core/3D/","sky_cube.obj");
-    env_mesh    = new Mesh("Core/3D/","sky_cube_env.obj");
-    quad_mesh   = new Mesh("Core/3D/","quad.obj");
+    mesh        = new Mesh(_find_data_dir("Core/3D/"),"Cube.obj");
+    skybox_mesh = new Mesh(_find_data_dir("Core/3D/"),"sky_cube.obj");
+    env_mesh    = new Mesh(_find_data_dir("Core/3D/"),"sky_cube_env.obj");
+    quad_mesh   = new Mesh(_find_data_dir("Core/3D/"),"quad.obj");
 
     m_prefiltered_env_map = new GLTextureCube(512);
 
@@ -1015,7 +1019,7 @@ bool GLWidget::loadMeshFile(const QString &fileName, bool bAddExtension)
     // loading new mesh
     Mesh* new_mesh;
     if(bAddExtension){
-        new_mesh = new Mesh(QString("Core/3D/"),fileName+QString(".obj"));
+        new_mesh = new Mesh(_find_data_dir("Core/3D/"),fileName+QString(".obj"));
     }else{
         new_mesh = new Mesh(QString(""),fileName);
     }

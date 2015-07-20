@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1390</width>
+    <width>1441</width>
     <height>755</height>
    </rect>
   </property>
@@ -39,7 +39,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QTabWidget" name="tabWidget">
+      <widget class="QStackedWidget" name="tabWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -58,14 +58,8 @@
          <height>16777215</height>
         </size>
        </property>
-       <property name="tabPosition">
-        <enum>QTabWidget::East</enum>
-       </property>
        <property name="currentIndex">
         <number>9</number>
-       </property>
-       <property name="elideMode">
-        <enum>Qt::ElideMiddle</enum>
        </property>
        <widget class="QWidget" name="tabDiffuseImage">
         <property name="sizePolicy">
@@ -74,12 +68,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <attribute name="title">
-         <string>Diffuse</string>
-        </attribute>
-        <attribute name="toolTip">
-         <string>Diffuse Image</string>
-        </attribute>
+        <property name="toolTip">
+         <string>Diffuse image</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_7">
          <property name="leftMargin">
           <number>2</number>
@@ -115,8 +106,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>376</width>
-              <height>646</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -148,12 +139,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <attribute name="title">
-         <string>Normal</string>
-        </attribute>
-        <attribute name="toolTip">
+        <property name="toolTip">
          <string>Normal image</string>
-        </attribute>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_8">
          <property name="leftMargin">
           <number>2</number>
@@ -189,8 +177,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>376</width>
-              <height>646</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -222,9 +210,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <attribute name="title">
-         <string>Specular</string>
-        </attribute>
+        <property name="toolTip">
+         <string>Specular image</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <property name="leftMargin">
           <number>2</number>
@@ -266,8 +254,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>376</width>
-              <height>646</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -299,9 +287,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <attribute name="title">
-         <string>Height</string>
-        </attribute>
+        <property name="toolTip">
+         <string>Height image</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_10">
          <property name="leftMargin">
           <number>2</number>
@@ -337,8 +325,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>376</width>
-              <height>646</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -370,9 +358,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <attribute name="title">
-         <string>Occlusion</string>
-        </attribute>
+        <property name="toolTip">
+         <string>Occlusion image</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_13">
          <property name="leftMargin">
           <number>2</number>
@@ -408,8 +396,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>376</width>
-              <height>646</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -441,9 +429,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <attribute name="title">
-         <string>Roughness</string>
-        </attribute>
+        <property name="toolTip">
+         <string>Roughness image</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_23">
          <property name="leftMargin">
           <number>2</number>
@@ -476,8 +464,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>376</width>
-              <height>646</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -509,9 +497,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <attribute name="title">
-         <string>Metallic</string>
-        </attribute>
+        <property name="toolTip">
+         <string>Metallic image</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_24">
          <property name="leftMargin">
           <number>2</number>
@@ -550,8 +538,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>376</width>
-              <height>646</height>
+              <width>100</width>
+              <height>30</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -577,9 +565,9 @@
         </layout>
        </widget>
        <widget class="QWidget" name="tabMaterialsIndicesImage">
-        <attribute name="title">
-         <string>Materials</string>
-        </attribute>
+        <property name="toolTip">
+         <string>Materials indices</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <property name="leftMargin">
           <number>2</number>
@@ -603,8 +591,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>367</width>
-              <height>644</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -636,9 +624,9 @@
         </layout>
        </widget>
        <widget class="QWidget" name="tabGrungeImage">
-        <attribute name="title">
-         <string>Grunge</string>
-        </attribute>
+        <property name="toolTip">
+         <string>Grunge image</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_29">
          <item>
           <widget class="QScrollArea" name="scrollArea_11">
@@ -650,8 +638,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>360</width>
-              <height>630</height>
+              <width>98</width>
+              <height>28</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -683,9 +671,9 @@
           <height>16777215</height>
          </size>
         </property>
-        <attribute name="title">
+        <property name="toolTip">
          <string>Output</string>
-        </attribute>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <property name="spacing">
           <number>2</number>
@@ -737,7 +725,7 @@
               <x>0</x>
               <y>0</y>
               <width>359</width>
-              <height>675</height>
+              <height>802</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -2028,9 +2016,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <attribute name="title">
-         <string>UV/Tilling</string>
-        </attribute>
+        <property name="toolTip">
+         <string>UV Tiling</string>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout_18">
          <property name="leftMargin">
           <number>2</number>
@@ -2060,8 +2048,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>376</width>
-              <height>646</height>
+              <width>371</width>
+              <height>593</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -3996,8 +3984,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1390</width>
-     <height>21</height>
+     <width>1441</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -4015,12 +4003,6 @@
    </property>
    <property name="movable">
     <bool>false</bool>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>30</width>
-     <height>30</height>
-    </size>
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonIconOnly</enum>
@@ -4092,7 +4074,7 @@
      <normaloff>:/resources/showDiffuse.png</normaloff>:/resources/showDiffuse.png</iconset>
    </property>
    <property name="text">
-    <string>Show diffuse</string>
+    <string>Diffuse</string>
    </property>
    <property name="toolTip">
     <string>Show diffuse image (Alt+1)</string>
@@ -4107,7 +4089,7 @@
      <normaloff>:/resources/showNormal.png</normaloff>:/resources/showNormal.png</iconset>
    </property>
    <property name="text">
-    <string>Show normal</string>
+    <string>Normal</string>
    </property>
    <property name="toolTip">
     <string>Show normal  image (Alt+2)</string>
@@ -4122,7 +4104,7 @@
      <normaloff>:/resources/showSpecular.png</normaloff>:/resources/showSpecular.png</iconset>
    </property>
    <property name="text">
-    <string>Show specular</string>
+    <string>Specular</string>
    </property>
    <property name="toolTip">
     <string>Show specular  image (Alt+3)</string>
@@ -4137,7 +4119,7 @@
      <normaloff>:/resources/showHeight.png</normaloff>:/resources/showHeight.png</iconset>
    </property>
    <property name="text">
-    <string>Show height</string>
+    <string>Height</string>
    </property>
    <property name="toolTip">
     <string>Show height  image (Alt+4)</string>
@@ -4152,7 +4134,7 @@
      <normaloff>:/resources/showSettings.png</normaloff>:/resources/showSettings.png</iconset>
    </property>
    <property name="text">
-    <string>Show settings</string>
+    <string>Settings</string>
    </property>
    <property name="toolTip">
     <string>Show settings tab (Alt+Q)</string>
@@ -4167,7 +4149,7 @@
      <normaloff>:/resources/showOcclusion.png</normaloff>:/resources/showOcclusion.png</iconset>
    </property>
    <property name="text">
-    <string>Show occlusion</string>
+    <string>Occlusion</string>
    </property>
    <property name="toolTip">
     <string>Show occlusion  image (Alt+5)</string>
@@ -4242,7 +4224,10 @@
      <normaloff>:/resources/showRoughness.png</normaloff>:/resources/showRoughness.png</iconset>
    </property>
    <property name="text">
-    <string>Show roughness</string>
+    <string>Roughness</string>
+   </property>
+   <property name="toolTip">
+    <string>Show roughness (Alt+6)</string>
    </property>
    <property name="shortcut">
     <string>Alt+6</string>
@@ -4254,7 +4239,10 @@
      <normaloff>:/resources/showMetallic.png</normaloff>:/resources/showMetallic.png</iconset>
    </property>
    <property name="text">
-    <string>Show metallic</string>
+    <string>Metallic</string>
+   </property>
+   <property name="toolTip">
+    <string>Show metallic (Alt+7)</string>
    </property>
    <property name="shortcut">
     <string>Alt+7</string>
@@ -4266,10 +4254,10 @@
      <normaloff>:/resources/showMaterials.png</normaloff>:/resources/showMaterials.png</iconset>
    </property>
    <property name="text">
-    <string>Show Materials</string>
+    <string>Materials</string>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show materials tab (Alt+W)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>Show materials tab (Alt+W)</string>
    </property>
    <property name="shortcut">
     <string>Alt+W</string>
@@ -4296,10 +4284,10 @@
      <normaloff>:/resources/showGrunge.png</normaloff>:/resources/showGrunge.png</iconset>
    </property>
    <property name="text">
-    <string>Show Grunge Map</string>
+    <string>Grunge map</string>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show grunge tab (G)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>Show grunge tab (G)</string>
    </property>
    <property name="shortcut">
     <string>G</string>

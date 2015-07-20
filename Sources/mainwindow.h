@@ -7,6 +7,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QDir>
+#include <QComboBox>
 #include "glwidget.h"
 #include "glimageeditor.h"
 #include "formimageprop.h"
@@ -160,6 +161,7 @@ private:
     QAction *aboutAction;
     QAction *logAction; // show logger
     QAction *shortcutsAction; // show key shortcuts
+    QComboBox *pageSel;
 
     QLabel  *statusLabel;
     DialogLogger* dialogLogger;
