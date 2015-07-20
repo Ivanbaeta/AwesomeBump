@@ -2,7 +2,31 @@
 #include "ui_mainwindow.h"
 #include <iostream>
 
+#ifndef GL_TEXTURE_FREE_MEMORY_ATI
+#	define GL_TEXTURE_FREE_MEMORY_ATI 0x87FC
+#endif // GL_TEXTURE_FREE_MEMORY_ATI
+
 extern QString _find_data_dir(const QString& path);
+
+class CloneAction : public QAction {
+    Q_OBJECT
+  public:
+    CloneAction(QAction *original, QObject *parent = 0) : QAction(parent), m_orig(original) {
+      connect(this, SIGNAL(changed()), original, SLOT(__update()));       // update on change
+      connect(this, SIGNAL(destroyed()), original, SLOT(deleteLater()));  // delete on destroyed
+      connect(this, SIGNAL(triggered()), original, SLOT(trigger()));      // trigger on triggered
+      // repeat with toggled, etc.
+      __update();
+    }
+  private slots:
+    void __update() {
+      static QStringList props = QStringList() << "text" << "iconText" << "enabled" << "checkable" << "checked";
+      foreach(const QString prop, props)
+        setProperty(qPrintable(prop), m_orig->property(qPrintable(prop)));
+    }
+  private:
+    QAction *m_orig;
+};
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,6 +42,12 @@ MainWindow::MainWindow(QWidget *parent) :
     GLWidget::recentMeshDir     = &recentMeshDir;
 
     statusLabel = new QLabel("Memory left:");
+#ifdef Q_OS_MAC
+    if(!statusLabel->testAttribute(Qt::WA_MacNormalSize)) statusLabel->setAttribute(Qt::WA_MacSmallSize);
+#endif
+
+    // calling this later causing crash on OSX
+    ui->setupUi(this);
 
     glImage          = new GLImage(this);
     glWidget         = new GLWidget(this,glImage);
@@ -168,10 +198,10 @@ MainWindow::MainWindow(QWidget *parent) :
     glImage ->targetImageMetallic  = metallicImageProp ->getImageProporties();
     glImage ->targetImageMaterial  = materialManager   ->getImageProporties();
     glImage ->targetImageGrunge    = grungeImageProp   ->getImageProporties();
+
     // ------------------------------------------------------
     //                      GUI setup
     // ------------------------------------------------------
-    ui->setupUi(this);
     ui->widget3DSettings->hide();
     ui->statusbar->addWidget(statusLabel);
 
@@ -197,12 +227,114 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->verticalLayoutMetallicImage ->addWidget(metallicImageProp);
     ui->verticalLayoutMaterialIndicesImage->addWidget(materialManager);
     ui->verticalLayoutGrungeImage   ->addWidget(grungeImageProp);
-
-    ui->tabWidget->setCurrentIndex(TAB_SETTINGS);
     
     connect(ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(updateImage(int)));
     connect(ui->tabWidget,SIGNAL(tabBarClicked(int)),this,SLOT(updateImage(int)));
-    
+
+    // page selection combobox:
+    struct _show_action {
+      int tab;
+      QAction *action;
+      QString smallIcon;
+    } showActionsConfig[] = {
+      { 0, ui->actionShowDiffuseImage, ":/resources/diffuse.png" },
+      { 1, ui->actionShowNormalImage, ":/resources/normal.png" },
+      { 2, ui->actionShowSpecularImage, ":/resources/specular.png" },
+      { 3, ui->actionShowHeightImage, ":/resources/height.png" },
+      { 4, ui->actionShowOcclusiontImage, ":/resources/occlusion.png" },
+      { 5, ui->actionShowRoughnessImage, ":/resources/roughness.png" },
+      { 6, ui->actionShowMetallicImage, ":/resources/metalic.png" },
+      { 7, ui->actionShowMaterialsImage, ":/resources/showMaterials.png" },
+      { 8, ui->actionShowGrungeTexture, ":/resources/grunge.png" },
+      { 9, ui->actionShowSettingsImage, ":/resources/showSettings.png" },
+      { 10, ui->actionShowUVsTab, ":/resources/showUVs.png" },
+      { -1, NULL, "" }
+    };
+
+    pageSel = new QComboBox();
+    QActionGroup *showTabGroup1 = new QActionGroup(this);
+    QWidget *pageSelW = new QWidget( );
+    QGridLayout *pageSelL = new QGridLayout( ); 
+    pageSelL->setSpacing( 0 ); pageSelL->setMargin( 0 ); pageSelL->setSpacing( 0 ); pageSelL->setContentsMargins( 0,0,0,0 );
+
+    QWidget *sback = new QWidget();
+    QHBoxLayout *lback = new QHBoxLayout(); lback->setMargin( 0 ); lback->setSpacing( 0 ); lback->setContentsMargins( 0,0,0,0 );
+    sback->setLayout( lback );
+
+    _show_action *act = showActionsConfig; int row = 0, col = 0; while (act->action) {
+
+      // action group
+      act->action->setCheckable(true);
+      if (ui->tabWidget->currentIndex() == act->tab) act->action->setChecked(true);
+      showTabGroup1->addAction(act->action);
+
+      // action with small icon:
+      QIcon icon(act->smallIcon);
+      CloneAction *clone = new CloneAction(act->action);
+      clone->setIcon(icon);
+      
+      // combo box:
+      QVariant v; v.setValue(act->action);
+      pageSel->addItem(icon, act->action->text(), v); if (ui->tabWidget->currentIndex() == act->tab) 
+        pageSel->setCurrentIndex(act->tab);
+
+      // butons grid:
+      QToolButton  *b = new QToolButton ( ); 
+      b->setToolButtonStyle( Qt::ToolButtonTextBesideIcon); b->setDefaultAction(clone);
+      pageSelL->addWidget( b, row, col ); row++; if (row == 2) { row = 0; col++; }
+ 
+      // status bar buttons:
+      QToolButton  *bs = new QToolButton ( );
+      bs->setDefaultAction(clone);
+      bs->setStyleSheet(
+        "QToolButton {"
+        "  border: 0px;"
+        "  padding-left: 2px;"
+        "}"
+        "QToolButton:pressed {"
+        "  background-color: qlineargradient("
+        "    x1: 0, y1: 0, x2: 0, y2: 1,"
+        "    stop: 0 #dadbde, stop: 1 #f6f7fa"
+        ")}"
+        "QToolButton:hover {"
+        "  border: 1px dotted grey;"
+        "}"
+      );
+      lback->addWidget(bs);
+
+      ++act;
+    }
+
+    connect(showTabGroup1, &QActionGroup::triggered, [this](QAction *action){
+      // update combox with new selection:
+      for(int i=0; i<pageSel->count(); ++i) {
+        QAction *a = pageSel->itemData(i).value<QAction*>(); if (action == a) {
+          bool state = pageSel->blockSignals(true);
+          pageSel->setCurrentIndex(i);
+          pageSel->blockSignals(state);
+        }
+      }
+    });
+
+
+    ui->statusbar->addPermanentWidget(sback);
+
+    ui->toolBar->insertWidget(ui->actionShowDiffuseImage, pageSel);
+    connect(pageSel, 
+      static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), // there are 2 activated signals
+      [this](int index) {
+      QAction *a = pageSel->itemData(index).value<QAction*>();
+      Q_ASSERT(a);
+      a->trigger();
+    });
+
+    pageSelW->setLayout( pageSelL );
+    ui->toolBar->addWidget(pageSelW);
+
+    // show startup page:
+    showActionsConfig[TAB_SETTINGS].action->setChecked(true);
+
+
     // imageChange and imageLoaded signals
     connect(diffuseImageProp    ,SIGNAL(imageChanged()),this,SLOT(updateDiffuseImage()));
     connect(normalImageProp     ,SIGNAL(imageChanged()),this,SLOT(updateNormalImage()));
@@ -420,7 +552,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(glImage           ,SIGNAL(colorPicked(QVector4D)),roughnessImageProp,SLOT(colorPicked(QVector4D)));
 
 
-    // 2D imate tool box settings
+    // 2D image tool box settings
     QActionGroup *group = new QActionGroup( this );
     group->addAction( ui->actionTranslateUV );
     group->addAction( ui->actionGrabCorners);
@@ -708,7 +840,6 @@ void MainWindow::selectGrungeTab(){
     updateImage(8);
 }
 
-
 void MainWindow::selectGeneralSettingsTab(){
     ui->tabWidget->setCurrentIndex(TAB_SETTINGS);
 }
@@ -729,49 +860,49 @@ void MainWindow::showHideTextureTypes(bool){
 
     bool value = ui->checkBoxSaveDiffuse->isChecked();
     diffuseImageProp->getImageProporties()->bSkipProcessing = !value;
-    ui->tabWidget->setTabEnabled(DIFFUSE_TEXTURE,value);
+    ui->tabWidget->widget(DIFFUSE_TEXTURE)->setEnabled(value);
     ui->pushButtonToggleDiffuse->setVisible(value);
     ui->pushButtonToggleDiffuse->setChecked(value);
     ui->actionShowDiffuseImage->setVisible(value);
 
     value = ui->checkBoxSaveNormal->isChecked();
     normalImageProp->getImageProporties()->bSkipProcessing = !value;
-    ui->tabWidget->setTabEnabled(NORMAL_TEXTURE,value);
+    ui->tabWidget->widget(NORMAL_TEXTURE)->setEnabled(value);
     ui->pushButtonToggleNormal->setVisible(value);
     ui->pushButtonToggleNormal->setChecked(value);
     ui->actionShowNormalImage->setVisible(value);
 
     value = ui->checkBoxSaveHeight->isChecked();
     occlusionImageProp->getImageProporties()->bSkipProcessing = !value;
-    ui->tabWidget->setTabEnabled(OCCLUSION_TEXTURE,value);
+    ui->tabWidget->widget(OCCLUSION_TEXTURE)->setEnabled(value);
     ui->pushButtonToggleOcclusion->setVisible(value);
     ui->pushButtonToggleOcclusion->setChecked(value);
     ui->actionShowOcclusiontImage->setVisible(value);
 
     value = ui->checkBoxSaveOcclusion->isChecked();
     heightImageProp->getImageProporties()->bSkipProcessing = !value;
-    ui->tabWidget->setTabEnabled(HEIGHT_TEXTURE,value);
+    ui->tabWidget->widget(HEIGHT_TEXTURE)->setEnabled(value);
     ui->pushButtonToggleHeight->setVisible(value);
     ui->pushButtonToggleHeight->setChecked(value);
     ui->actionShowHeightImage->setVisible(value);
 
     value = ui->checkBoxSaveSpecular->isChecked();
     specularImageProp->getImageProporties()->bSkipProcessing = !value;
-    ui->tabWidget->setTabEnabled(SPECULAR_TEXTURE,value);
+    ui->tabWidget->widget(SPECULAR_TEXTURE)->setEnabled(value);
     ui->pushButtonToggleSpecular->setVisible(value);
     ui->pushButtonToggleSpecular->setChecked(value);
     ui->actionShowSpecularImage->setVisible(value);
 
     value = ui->checkBoxSaveRoughness->isChecked();
     roughnessImageProp->getImageProporties()->bSkipProcessing = !value;
-    ui->tabWidget->setTabEnabled(ROUGHNESS_TEXTURE,value);
+    ui->tabWidget->widget(ROUGHNESS_TEXTURE)->setEnabled(value);
     ui->pushButtonToggleRoughness->setVisible(value);
     ui->pushButtonToggleRoughness->setChecked(value);
     ui->actionShowRoughnessImage->setVisible(value);
 
     value = ui->checkBoxSaveMetallic->isChecked();
     metallicImageProp->getImageProporties()->bSkipProcessing = !value;
-    ui->tabWidget->setTabEnabled(METALLIC_TEXTURE,value);
+    ui->tabWidget->widget(METALLIC_TEXTURE)->setEnabled(value);
     ui->pushButtonToggleMetallic->setVisible(value);
     ui->pushButtonToggleMetallic->setChecked(value);
     ui->actionShowMetallicImage->setVisible(value);
@@ -1443,8 +1574,8 @@ void MainWindow::updateSpinBoxes(int){
 
 void MainWindow::selectShadingModel(int i){
       glWidget->selectShadingModel(i);
-      if(i == 0) ui->tabWidget->setTabText(5,"Roughness");
-      if(i == 1) ui->tabWidget->setTabText(5,"Glossiness");
+      //if(i == 0) ui->tabWidget->setTabText(5,"Roughness");
+      //if(i == 1) ui->tabWidget->setTabText(5,"Glossiness");
 }
 
 
@@ -2135,3 +2266,5 @@ void MainWindow::aboutQt()
 {
     QMessageBox::aboutQt(this, tr(AWESOME_BUMP_VERSION));
 }
+
+#include "mainwindow.moc"
