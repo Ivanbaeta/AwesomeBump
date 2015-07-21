@@ -6,6 +6,8 @@ DialogLogger::DialogLogger(QWidget *parent) :
     ui(new Ui::DialogLogger)
 {
     ui->setupUi(this);
+
+    ui->labelInfo->setText(QString("%1 (%2):").arg(ui->labelInfo->text(), AB_LOG));
 }
 
 DialogLogger::~DialogLogger()
