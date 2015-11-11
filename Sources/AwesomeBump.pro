@@ -95,3 +95,7 @@ exists("../Third/QtnProperty/QtnProperty.pri") {
   DEFINES += HAVE_QTNPROP
   include("../Third/QtnProperty/QtnProperty.pri")
 }
+exists("../Third/QProgressIndicator/qprogressindicator.pri") {
+  DEFINES += HAVE_QTPROGRESSINDICATOR
+  include("../Third/QProgressIndicator/qprogressindicator.pri")
+}
