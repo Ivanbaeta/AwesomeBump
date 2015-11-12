@@ -1057,9 +1057,12 @@ void GLWidget::chooseMeshFile(const QString &fileName){
 void GLWidget::chooseSkyBox(QString cubeMapName,bool bFirstTime){
     QStringList list;
     makeCurrent();
-    list << "Core/2D/skyboxes/" + cubeMapName + "/posx.jpg" << "Core/2D/skyboxes/" + cubeMapName  + "/negx.jpg" << "Core/2D/skyboxes/" + cubeMapName + "/posy.jpg"
-         << "Core/2D/skyboxes/" + cubeMapName + "/negy.jpg" << "Core/2D/skyboxes/" + cubeMapName  + "/posz.jpg" << "Core/2D/skyboxes/" + cubeMapName + "/negz.jpg";
-
+    list << _find_data_dir("Core/2D/skyboxes/") + cubeMapName + "/posx.jpg"
+    	<< _find_data_dir("Core/2D/skyboxes/") + cubeMapName  + "/negx.jpg"
+    	<< _find_data_dir("Core/2D/skyboxes/") + cubeMapName + "/posy.jpg"
+    	<< _find_data_dir("Core/2D/skyboxes/") + cubeMapName + "/negy.jpg"
+    	<< _find_data_dir("Core/2D/skyboxes/") + cubeMapName  + "/posz.jpg"
+    	<< _find_data_dir("Core/2D/skyboxes/") + cubeMapName + "/negz.jpg";
 
     qDebug() << "Reading new cube map:" << list;
     bDiffuseMapBaked     = false;

@@ -65,9 +65,9 @@ QString _find_data_dir(const QString& path)
 #if defined(Q_OS_MAC)
     fpath += "/../../../"+path;
 #elif defined(Q_OS_WIN32)
-    fpath = path;
+    fpath = QString(RESOURCE_BASE) + path;
 #else
-    fpath = path;
+    fpath = QString(RESOURCE_BASE) + path;
 #endif
     qDebug() << "fphath2:" << fpath;
     return fpath;
