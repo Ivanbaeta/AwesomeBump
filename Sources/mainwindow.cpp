@@ -232,110 +232,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->tabWidget,SIGNAL(currentChanged(int)),this,SLOT(updateImage(int)));
     connect(ui->tabWidget,SIGNAL(tabBarClicked(int)),this,SLOT(updateImage(int)));
 
-    // page selection combobox:
-    struct _show_action {
-      int tab;
-      QAction *action;
-      QString smallIcon;
-    } showActionsConfig[] = {
-      { 0, ui->actionShowDiffuseImage, ":/resources/diffuse.png" },
-      { 1, ui->actionShowNormalImage, ":/resources/normal.png" },
-      { 2, ui->actionShowSpecularImage, ":/resources/specular.png" },
-      { 3, ui->actionShowHeightImage, ":/resources/height.png" },
-      { 4, ui->actionShowOcclusiontImage, ":/resources/occlusion.png" },
-      { 5, ui->actionShowRoughnessImage, ":/resources/roughness.png" },
-      { 6, ui->actionShowMetallicImage, ":/resources/metalic.png" },
-      { 7, ui->actionShowMaterialsImage, ":/resources/showMaterials.png" },
-      { 8, ui->actionShowGrungeTexture, ":/resources/grunge.png" },
-      { 9, ui->actionShowSettingsImage, ":/resources/showSettings.png" },
-      { 10, ui->actionShowUVsTab, ":/resources/showUVs.png" },
-      { -1, NULL, "" }
-    };
-
-    pageSel = new QComboBox();
-    QActionGroup *showTabGroup1 = new QActionGroup(this);
-    QWidget *pageSelW = new QWidget( );
-    QGridLayout *pageSelL = new QGridLayout( ); 
-    pageSelL->setSpacing( 0 ); pageSelL->setMargin( 0 ); pageSelL->setSpacing( 0 ); pageSelL->setContentsMargins( 0,0,0,0 );
-
-    QWidget *sback = new QWidget();
-    QHBoxLayout *lback = new QHBoxLayout(); lback->setMargin( 0 ); lback->setSpacing( 0 ); lback->setContentsMargins( 0,0,0,0 );
-    sback->setLayout( lback );
-
-    _show_action *act = showActionsConfig; int row = 0, col = 0; while (act->action) {
-
-      // action group
-      act->action->setCheckable(true);
-      if (ui->tabWidget->currentIndex() == act->tab) act->action->setChecked(true);
-      showTabGroup1->addAction(act->action);
-
-      // action with small icon:
-      QIcon icon(act->smallIcon);
-      CloneAction *clone = new CloneAction(act->action);
-      clone->setIcon(icon);
-      
-      // combo box:
-      QVariant v; v.setValue(act->action);
-      pageSel->addItem(icon, act->action->text(), v); if (ui->tabWidget->currentIndex() == act->tab) 
-        pageSel->setCurrentIndex(act->tab);
-
-      // butons grid:
-      QToolButton  *b = new QToolButton ( ); 
-      b->setToolButtonStyle( Qt::ToolButtonTextBesideIcon); b->setDefaultAction(clone);
-      pageSelL->addWidget( b, row, col ); row++; if (row == 2) { row = 0; col++; }
- 
-      // status bar buttons:
-      QToolButton  *bs = new QToolButton ( );
-      bs->setDefaultAction(clone);
-      bs->setStyleSheet(
-        "QToolButton {"
-        "  border: 1px solid transparent;"
-        "}"
-        "QToolButton:pressed {"
-        "  background-color: qlineargradient("
-        "    x1: 0, y1: 0, x2: 0, y2: 1,"
-        "    stop: 0 #dadbde, stop: 1 #f6f7fa"
-        "  border: 1px dotted grey;"
-        ")}"
-        "QToolButton:checked {"
-        "  background-color: qlineargradient("
-        "    x1: 0, y1: 0, x2: 0, y2: 1,"
-        "    stop: 0 #dadbde, stop: 1 #f6f7fa"
-        ")}"
-         "QToolButton:hover {"
-        "  border: 1px dotted grey;"
-        "}"
-      );
-      lback->addWidget(bs);
-
-      ++act;
-    }
-
-    connect(showTabGroup1, &QActionGroup::triggered, [this](QAction *action){
-      // update combox with new selection:
-      for(int i=0; i<pageSel->count(); ++i) {
-        QAction *a = pageSel->itemData(i).value<QAction*>(); if (action == a) {
-          bool state = pageSel->blockSignals(true);
-          pageSel->setCurrentIndex(i);
-          pageSel->blockSignals(state);
-        }
-      }
-    });
-
-
-    ui->statusbar->addPermanentWidget(sback);
-
-    ui->toolBar->insertWidget(ui->actionShowDiffuseImage, pageSel);
-    connect(pageSel, 
-      static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), // there are 2 activated signals
-      [this](int index) {
-      QAction *a = pageSel->itemData(index).value<QAction*>();
-      Q_ASSERT(a);
-      a->trigger();
-    });
-
-    pageSelW->setLayout( pageSelL );
-    ui->toolBar->addWidget(pageSelW);
+	configureToolbarAndStatusline();
 
     // show startup page:
     showActionsConfig[TAB_SETTINGS].action->setChecked(true);
@@ -2256,6 +2153,80 @@ void MainWindow::loadSettings(){
     glWidget->repaint();
     bFirstTime = false;
 
+}
+
+void MainWindow::buildPropertyTree()
+{
+}
+
+void MainWindow::configureToolbarAndStatusline()
+{
+    // page selection combobox:
+    struct _show_action {
+      int tab;
+      QAction *action;
+      QString smallIcon;
+    } showActionsConfig[] = {
+      { 0, ui->actionShowDiffuseImage, ":/resources/diffuse.png" },
+      { 1, ui->actionShowNormalImage, ":/resources/normal.png" },
+      { 2, ui->actionShowSpecularImage, ":/resources/specular.png" },
+      { 3, ui->actionShowHeightImage, ":/resources/height.png" },
+      { 4, ui->actionShowOcclusiontImage, ":/resources/occlusion.png" },
+      { 5, ui->actionShowRoughnessImage, ":/resources/roughness.png" },
+      { 6, ui->actionShowMetallicImage, ":/resources/metalic.png" },
+      { 7, ui->actionShowMaterialsImage, ":/resources/showMaterials.png" },
+      { 8, ui->actionShowGrungeTexture, ":/resources/grunge.png" },
+      { 9, ui->actionShowSettingsImage, ":/resources/showSettings.png" },
+      { 10, ui->actionShowUVsTab, ":/resources/showUVs.png" },
+      { -1, NULL, "" }
+    };
+
+    pageSel = new QComboBox();
+    QActionGroup *showTabGroup1 = new QActionGroup(this);
+    QWidget *pageSelW = new QWidget( );
+    QGridLayout *pageSelL = new QGridLayout( ); 
+    pageSelL->setSpacing( 0 ); pageSelL->setMargin( 0 ); pageSelL->setSpacing( 0 ); pageSelL->setContentsMargins( 0,0,0,0 );
+
+    _show_action *act = showActionsConfig; int row = 0, col = 0; while (act->action) {
+      // action group
+      act->action->setCheckable(true);
+      if (ui->tabWidget->currentIndex() == act->tab) act->action->setChecked(true);
+      showTabGroup1->addAction(act->action);
+
+      // action with small icon:
+      QIcon icon(act->smallIcon);
+      CloneAction *clone = new CloneAction(act->action);
+      clone->setIcon(icon);
+      
+      // combo box:
+      QVariant v; v.setValue(act->action);
+      pageSel->addItem(icon, act->action->text(), v); if (ui->tabWidget->currentIndex() == act->tab) 
+        pageSel->setCurrentIndex(act->tab);
+
+      ++act;
+    }
+
+    connect(showTabGroup1, &QActionGroup::triggered, [this](QAction *action){
+      // update combox with new selection:
+      for(int i=0; i<pageSel->count(); ++i) {
+        QAction *a = pageSel->itemData(i).value<QAction*>(); if (action == a) {
+          bool state = pageSel->blockSignals(true);
+          pageSel->setCurrentIndex(i);
+          pageSel->blockSignals(state);
+        }
+      }
+    });
+
+    connect(pageSel, 
+      static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), // there are 2 activated signals
+      [this](int index) {
+      QAction *a = pageSel->itemData(index).value<QAction*>();
+      Q_ASSERT(a);
+      a->trigger();
+    });
+
+    pageSelW->setLayout( pageSelL );
+    ui->toolBar->addWidget(pageSelW);
 }
 
 void MainWindow::about()
