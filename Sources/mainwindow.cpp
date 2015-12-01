@@ -85,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
     glWidget->setPointerToTexture(&heightImageProp->getImageProporties()   ->fbo,HEIGHT_TEXTURE);
     glWidget->setPointerToTexture(&occlusionImageProp->getImageProporties()->fbo,OCCLUSION_TEXTURE);
     glWidget->setPointerToTexture(&roughnessImageProp->getImageProporties()->fbo,ROUGHNESS_TEXTURE);
-    glWidget->setPointerToTexture(&metallicImageProp->getImageProporties()->fbo,METALLIC_TEXTURE);
+    glWidget->setPointerToTexture(&metallicImageProp->getImageProporties()->fbo ,METALLIC_TEXTURE);
 
     glWidget->setPointerToTexture(&materialManager->getImageProporties()->fbo,MATERIAL_TEXTURE);
     //glWidget->setPointerToTexture(&grungeImageProp->getImageProporties()->fbo,GRUNGE_TEXTURE);
@@ -624,33 +624,33 @@ void MainWindow::replotAllImages(){
     // skip grunge map if conversion is enabled
     if(glImage->getConversionType() != CONVERT_FROM_D_TO_O){        
         updateImage(GRUNGE_TEXTURE);
-        glImage->update();
+        //glImage->update();
     }
 
     updateImage(DIFFUSE_TEXTURE);
-    glImage->update();
+    //glImage->update();
 
     updateImage(ROUGHNESS_TEXTURE);
-    glImage->update();
+    //glImage->update();
 
     updateImage(METALLIC_TEXTURE);
-    glImage->update();
+   // glImage->update();
 
     updateImage(HEIGHT_TEXTURE);
-    glImage->update();
+   // glImage->update();
 
     // recalulate normal at the end
     updateImage(NORMAL_TEXTURE);
-    glImage->update();
+   // glImage->update();
     // then ambient occlusion
     updateImage(OCCLUSION_TEXTURE);
-    glImage->update();
+    //glImage->update();
 
     updateImage(SPECULAR_TEXTURE);
-    glImage->update();
+   // glImage->update();
 
     updateImage(MATERIAL_TEXTURE);
-    glImage->update();
+   // glImage->update();
 
 
 
@@ -1005,7 +1005,7 @@ void MainWindow::updateDiffuseImage(){
     if(specularImageProp->getImageProporties()->inputImageType == INPUT_FROM_DIFFUSE_OUTPUT){
         glImage->enableShadowRender(true);
         updateImage(SPECULAR_TEXTURE);
-        glImage->updateGL();
+        //glImage->updateGL();
         glImage->enableShadowRender(false);
         // set height tab back again
         updateImage(DIFFUSE_TEXTURE);
@@ -1015,7 +1015,7 @@ void MainWindow::updateDiffuseImage(){
     if(roughnessImageProp->getImageProporties()->inputImageType == INPUT_FROM_DIFFUSE_OUTPUT){
         glImage->enableShadowRender(true);
         updateImage(ROUGHNESS_TEXTURE);
-        glImage->updateGL();
+        //glImage->updateGL();
         glImage->enableShadowRender(false);
         // set height tab back again
         updateImage(DIFFUSE_TEXTURE);
@@ -1025,7 +1025,7 @@ void MainWindow::updateDiffuseImage(){
     if(metallicImageProp->getImageProporties()->inputImageType == INPUT_FROM_DIFFUSE_OUTPUT){
         glImage->enableShadowRender(true);
         updateImage(METALLIC_TEXTURE);
-        glImage->updateGL();
+        //glImage->updateGL();
         glImage->enableShadowRender(false);
         // set height tab back again
         updateImage(DIFFUSE_TEXTURE);
@@ -1041,7 +1041,7 @@ void MainWindow::updateNormalImage(){
     if(occlusionImageProp->getImageProporties()->inputImageType == INPUT_FROM_HO_NO){
         glImage->enableShadowRender(true);
         updateImage(OCCLUSION_TEXTURE);
-        glImage->updateGL();
+        //glImage->updateGL();
         glImage->enableShadowRender(false);
         // set height tab back again
         updateImage(NORMAL_TEXTURE);
@@ -1063,7 +1063,7 @@ void MainWindow::updateHeightImage(){
     if(normalImageProp->getImageProporties()->inputImageType == INPUT_FROM_HEIGHT_OUTPUT){
         glImage->enableShadowRender(true);
         updateImage(NORMAL_TEXTURE);
-        glImage->updateGL();
+        //glImage->updateGL();
         glImage->enableShadowRender(false);
         // set height tab back again
         updateImage(HEIGHT_TEXTURE);
@@ -1072,7 +1072,7 @@ void MainWindow::updateHeightImage(){
     if(specularImageProp->getImageProporties()->inputImageType == INPUT_FROM_HEIGHT_OUTPUT){
         glImage->enableShadowRender(true);
         updateImage(SPECULAR_TEXTURE);
-        glImage->updateGL();
+        //glImage->updateGL();
         glImage->enableShadowRender(false);
         // set height tab back again
         updateImage(HEIGHT_TEXTURE);
@@ -1083,7 +1083,7 @@ void MainWindow::updateHeightImage(){
        occlusionImageProp->getImageProporties()->inputImageType == INPUT_FROM_HO_NO){
         glImage->enableShadowRender(true);
         updateImage(OCCLUSION_TEXTURE);
-        glImage->updateGL();
+        //glImage->updateGL();
         glImage->enableShadowRender(false);
         // set height tab back again
         updateImage(HEIGHT_TEXTURE);
@@ -1093,7 +1093,7 @@ void MainWindow::updateHeightImage(){
     if(roughnessImageProp->getImageProporties()->inputImageType == INPUT_FROM_HEIGHT_OUTPUT){
         glImage->enableShadowRender(true);
         updateImage(ROUGHNESS_TEXTURE);
-        glImage->updateGL();
+        //glImage->updateGL();
         glImage->enableShadowRender(false);
         // set height tab back again
         updateImage(HEIGHT_TEXTURE);
@@ -1102,7 +1102,7 @@ void MainWindow::updateHeightImage(){
     if(metallicImageProp->getImageProporties()->inputImageType == INPUT_FROM_HEIGHT_OUTPUT){
         glImage->enableShadowRender(true);
         updateImage(METALLIC_TEXTURE);
-        glImage->updateGL();
+        //glImage->updateGL();
         glImage->enableShadowRender(false);
         // set height tab back again
         updateImage(HEIGHT_TEXTURE);
@@ -1194,7 +1194,7 @@ void MainWindow::initializeImages(){
     FBOImageProporties* lastActive = glImage->getActiveImage();
 
     updateImage(OCCLUSION_TEXTURE);
-    glImage->update();
+    //glImage->update();
     glImage->setActiveImage(lastActive);
 
 }

@@ -778,7 +778,7 @@ void FormImageProp::showGrungeSettingsGroup(){
     for( QStringList::ConstIterator entry=entries.begin(); entry!=entries.end(); ++entry ){
         QString dirname=*entry;
         if(dirname != tr(".") && dirname != tr("..")){
-            qDebug() << "Enviromental map:" << dirname;
+            qDebug() << "Loading grunge map:" << dirname;
             ui->comboBoxGrungePredefined->addItem(dirname);
         }
     }// end of for
